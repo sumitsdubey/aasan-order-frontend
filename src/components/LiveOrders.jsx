@@ -35,7 +35,7 @@ const LiveOrders = (shopId) => {
 
   const createStompClient = (shopId) => {
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/api/v1/ws-orders'),
+      webSocketFactory: () => new SockJS(`${baseUrl}/ws-orders`),
       reconnectDelay: 5000,
       onConnect: () => {
         console.log('🟢 WebSocket connected');
@@ -94,19 +94,21 @@ const LiveOrders = (shopId) => {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="space-y-4">
-            {orders.length >0 ?  orders.map((order, key) => (
+            {orders.length > 0 ? orders.map((order, key) => (
               <div
                 key={order.orderId}
-                className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition-colors"
+                className="bg-gray-900 rounded-lg p-3 sm:p-4 hover:bg-gray-800 transition-colors"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <span className="font-semibold text-gray-100">
                       {order.customerName}
                     </span>
-                    <span className="text-gray-200">Table No: {order.tableNumber}</span>
+                    <span className="text-gray-200">
+                      Table No: {order.tableNumber}
+                    </span>
                     <span
                       className={`px-2 py-1 rounded-full text-xs border ${getStatusColor(
                         order.orderStatus
@@ -115,28 +117,34 @@ const LiveOrders = (shopId) => {
                       {order.orderStatus}
                     </span>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <div className="font-semibold text-gray-100">
-                    ₹{order.totalAmount}
+                      ₹{order.totalAmount}
                     </div>
-                    <div className="text-sm text-gray-200">{order.orderDate}</div>
+                    <div className="text-sm text-gray-200 break-all">{order.orderDate}</div>
                   </div>
                 </div>
-                <div className="text-xl text-gray-100 mb-3">
-                Items:
-                  {order.items.map((item)=><> <span key={item.itemId}>{item.itemName} - {item.quantity?item.quantity:1}, </span></>)}
+                <div className="text-base sm:text-xl text-gray-100 mb-3 flex flex-col sm:flex-row">
+                  <span className="font-medium">Items:</span>
+                  <span className="flex flex-wrap gap-x-2">
+                    {order.items.map((item) => (
+                      <span key={item.itemId}>
+                        {item.itemName} - {item.quantity ? item.quantity : 1},
+                      </span>
+                    ))}
+                  </span>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => updateOrderStatus(order.orderId, "PREPAIRING")}
-                    className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-xs hover:bg-yellow-200 transition-colors"
+                    className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-xs hover:bg-yellow-200 transition-colors w-full sm:w-auto"
                     disabled={order.orderStatus === "PENDING"}
                   >
                     Preparing
                   </button>
                   <button
                     onClick={() => updateOrderStatus(order.id, "READY")}
-                    className="px-3 py-1 bg-green-100 text-green-800 rounded text-xs hover:bg-green-200 transition-colors"
+                    className="px-3 py-1 bg-green-100 text-green-800 rounded text-xs hover:bg-green-200 transition-colors w-full sm:w-auto"
                     disabled={order.orderStatus === "READY"}
                   >
                     Ready
@@ -145,13 +153,17 @@ const LiveOrders = (shopId) => {
                     onClick={() =>
                       setOrders((prev) => prev.filter((o) => o.orderId !== order.orderId))
                     }
-                    className="px-3 py-1 bg-gray-100 text-gray-800 rounded text-xs hover:bg-gray-200 transition-colors"
+                    className="px-3 py-1 bg-gray-100 text-gray-800 rounded text-xs hover:bg-gray-200 transition-colors w-full sm:w-auto"
                   >
                     Complete
                   </button>
                 </div>
               </div>
-            )): <><h1>No Order At this time</h1></>}
+            )) : (
+              <div className="flex justify-center items-center h-32">
+                <h1 className="text-gray-200 text-lg">No Order At this time</h1>
+              </div>
+            )}
           </div>
         </div>
       </div>

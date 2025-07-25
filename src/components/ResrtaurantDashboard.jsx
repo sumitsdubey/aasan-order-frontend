@@ -116,7 +116,7 @@ const fetchData = async () => {
       </header>
 
       {loading && <Loading/>}
-      {profile && <ShopRegistration setProfile={setProfile}/>}
+      {profile && <ShopRegistration setProfile={setProfile} shopData = {shopData}/>}
 
 
       {/* Navigation */}
