@@ -71,7 +71,7 @@ const OrderMenu = ({ shopId }) => {
             : cartItem
         );
       }
-      return [...prevCart, { ...item}];
+      return [...prevCart, { ...item, quantity: 1}];
     });
   };
 
